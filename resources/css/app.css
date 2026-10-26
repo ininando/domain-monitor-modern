@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* Dark mode dikendalikan kelas `dark` pada <html> (lihat partial theme-script). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Sidebar ciut (desktop) dikendalikan atribut data-sidebar pada <html>. */
+@custom-variant sidebar-collapsed (&:where([data-sidebar='collapsed'] *));
+
+/*
+ * Token semantik — nilainya berganti otomatis di mode gelap.
+ * Sumber: design-system/domain-monitor-opd-tomohon/MASTER.md
+ */
+:root {
+    --canvas: var(--color-slate-50);
+    --surface: #ffffff;
+    --surface-muted: var(--color-slate-100);
+    --ink: var(--color-slate-900);
+    --ink-muted: var(--color-slate-600);
+    --ink-subtle: var(--color-slate-500);
+    --line: var(--color-slate-200);
+    --line-strong: var(--color-slate-300);
+    --primary: #0369a1;
+    --primary-hover: #075985;
+    --on-primary: #ffffff;
+    --primary-soft: #e0f2fe;
+    --on-primary-soft: #075985;
+
+    /*
+     * Palet kategorikal chart (urutan tetap, divalidasi CVD dengan skill dataviz).
+     * Sengaja menghindari merah/kuning/hijau karena warna itu khusus status.
+     */
+    --chart-1: #2a78d6;
+    --chart-2: #eb6834;
+    --chart-3: #1baf7a;
+    --chart-4: #4a3aa7;
+    --chart-5: #e87ba4;
+    --chart-other: #94a3b8;
+    --chart-grid: rgb(15 23 42 / 0.07);
+}
+
+.dark {
+    --canvas: var(--color-slate-950);
+    --surface: var(--color-slate-900);
+    --surface-muted: var(--color-slate-800);
+    --ink: var(--color-slate-100);
+    --ink-muted: var(--color-slate-400);
+    --ink-subtle: var(--color-slate-400);
+    --line: var(--color-slate-800);
+    --line-strong: var(--color-slate-700);
+    --primary: #38bdf8;
+    --primary-hover: #7dd3fc;
+    --on-primary: #082f49;
+    --primary-soft: rgb(56 189 248 / 0.15);
+    --on-primary-soft: #7dd3fc;
+    --chart-1: #3987e5;
+    --chart-2: #d95926;
+    --chart-3: #199e70;
+    --chart-4: #9085e9;
+    --chart-5: #d55181;
+    --chart-other: #64748b;
+    --chart-grid: rgb(255 255 255 / 0.08);
+    color-scheme: dark;
+}
+
+@theme inline {
+    --color-canvas: var(--canvas);
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-ink: var(--ink);
+    --color-ink-muted: var(--ink-muted);
+    --color-ink-subtle: var(--ink-subtle);
+    --color-line: var(--line);
+    --color-line-strong: var(--line-strong);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-on-primary: var(--on-primary);
+    --color-primary-soft: var(--primary-soft);
+    --color-on-primary-soft: var(--on-primary-soft);
+}
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+    --radius-control: 10px;
+
+    --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+    --shadow-pop: 0 10px 30px -8px rgb(15 23 42 / 0.18), 0 4px 8px -4px rgb(15 23 42 / 0.08);
+
+    --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+
+    @keyframes shimmer {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.45; }
+    }
+}
+
+@layer base {
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-canvas text-ink;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+@layer components {
+    /* Kartu dasar: border di kedua mode, bayangan halus hanya di mode terang. */
+    .card {
+        @apply rounded-2xl border border-line bg-surface shadow-card dark:shadow-none;
+    }
+
+    /* Focus ring konsisten untuk semua kontrol interaktif. */
+    .focus-ring {
+        @apply outline-none focus-visible:ring-3 focus-visible:ring-primary/35 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas;
+    }
+
+    .field {
+        @apply block w-full rounded-control border border-line-strong bg-surface px-3.5 py-2.5 text-sm text-ink shadow-xs transition duration-150 placeholder:text-ink-subtle/70 hover:border-ink-subtle/60 focus:border-primary focus:ring-3 focus:ring-primary/25 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-none;
+    }
+
+    .field-invalid {
+        @apply border-red-600 focus:border-red-600 focus:ring-red-600/25 dark:border-red-400;
+    }
+
+    .skeleton {
+        @apply animate-shimmer rounded-md bg-surface-muted;
+    }
+}
